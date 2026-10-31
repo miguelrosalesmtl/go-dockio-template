@@ -173,6 +173,9 @@ func runDeleteSuperuser(args []string) error {
 
 // newBox opens the key that seals the døckio client secret and friends.
 func newBox(cfg *settings.Settings) (*secrets.Box, error) {
+	if cfg.Secrets.Key == "" {
+		return nil, errors.New("SECRETS_KEY is not set (generate one with: openssl rand -base64 32)")
+	}
 	key, err := secrets.ParseKey(cfg.Secrets.Key)
 	if err != nil {
 		return nil, fmt.Errorf("SECRETS_KEY: %w (generate one with: openssl rand -base64 32)", err)
@@ -359,10 +362,8 @@ func runPurge() error {
 	}
 	defer pool.Close()
 
-	box, err := newBox(cfg)
-	if err != nil {
-		return err
-	}
+	// Purging never opens a sealed value, so it runs without SECRETS_KEY.
+	box, _ := newBox(cfg)
 	svc := newIdentity(cfg, pool, box, log)
 
 	// Organizations first: the cascade takes their audit entries with it, so purging them

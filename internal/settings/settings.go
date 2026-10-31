@@ -249,7 +249,11 @@ type Secrets struct {
 	// Key is base64 of 32 random bytes: `openssl rand -base64 32`. Losing it
 	// loses the sealed values -- the connection then has to be made again -- so
 	// store it like any other production secret.
-	Key string `env:"SECRETS_KEY,required,unset"`
+	//
+	// Required by the server and the superuser commands, which check it when
+	// they open it; `migrate` and `purge` never touch a sealed value and run
+	// without it.
+	Key string `env:"SECRETS_KEY,unset"`
 }
 
 // Load reads the .env file (if present) and parses environment variables into
