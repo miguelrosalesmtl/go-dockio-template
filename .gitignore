@@ -1,0 +1,21 @@
+# Local configuration. Holds real credentials -- never commit it.
+.env
+
+# Build output
+/bin/
+*.exe
+
+# Test and coverage artefacts
+*.out
+coverage.html
+# Server log written by the e2e runner (CI and the local driver).
+*.log
+
+# Editor / tooling
+.claude/
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
